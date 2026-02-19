@@ -244,7 +244,7 @@ function SNRDemo() {
             <div className="border-2 border-gray-300 rounded">
               <img 
                 ref={imageRef}
-                src="https://dl.dropboxusercontent.com/scl/fi/gdr38l1hrmlstvd4j5lk0/lateral_psf.tif?rlkey=h22a5dtv33cp6cldy19u45xwx&st=xxixxitz"
+                src="https://microtutor-courses.github.io/microtutor-demos/images/lateral_psf.tif"
                 alt="PSF"
                 style={{ display: 'none' }}
                 crossOrigin="anonymous"
