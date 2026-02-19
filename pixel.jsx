@@ -60,7 +60,7 @@ function PixelDemo() {
         <div className="relative mb-6 inline-block">
             <img 
             ref={imageRef}
-            src="https://edelaserna.github.io/microtutor-demos/images/u2os_ph488.jpg"
+            src="https://microtutor-courses.github.io/microtutor-demos/images/u2os_ph488.jpg"
             alt="Microscopy Image"
             style={{ display: 'none' }}
             crossOrigin="anonymous"

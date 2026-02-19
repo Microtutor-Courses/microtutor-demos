@@ -21493,7 +21493,7 @@ function PixelDemo() {
     "img",
     {
       ref: imageRef,
-      src: "https://edelaserna.github.io/microtutor-demos/images/u2os_ph488.jpg",
+      src: "https://microtutor-courses.github.io/microtutor-demos/images/u2os_ph488.jpg",
       alt: "Microscopy Image",
       style: { display: "none" },
       crossOrigin: "anonymous"
