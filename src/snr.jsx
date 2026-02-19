@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
 
 function SNRDemo() {
   const [noiseLevel, setNoiseLevel] = useState(0);
@@ -291,5 +290,4 @@ function SNRDemo() {
   );
 }
 
-const root = createRoot(document.getElementById('snr-demo'));
-root.render(<SNRDemo />);
+export default SNRDemo
