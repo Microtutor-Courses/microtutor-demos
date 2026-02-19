@@ -179,7 +179,7 @@ function WaveInterferenceDemo() {
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
   `}</style>
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
+    <div className="flex flex-col items-center justify-center bg-gray-100 p-8">
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl">
         {/* Info section */}
         <div className="mb-6 p-4 rounded-lg text-center">
@@ -283,5 +283,10 @@ function WaveInterferenceDemo() {
     );
 }
 
-const root = createRoot(document.getElementById('interference-demo'))
-root.render(<WaveInterferenceDemo />)
+export default WaveInterferenceDemo
+
+// Only mount if the target div exists on the page
+const container = document.getElementById('interference-demo')
+if (container) {
+  createRoot(container).render(<WaveInterferenceDemo />)
+}

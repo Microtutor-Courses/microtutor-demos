@@ -99,5 +99,10 @@ function PixelDemo() {
     );
 }
 
-const root = createRoot(document.getElementById('pixel-demo'))
-root.render(<PixelDemo />)
+export default PixelDemo
+
+// Only mount if the target div exists on the page
+const container = document.getElementById('pixel-demo')
+if (container) {
+  createRoot(container).render(<PixelDemo />)
+}

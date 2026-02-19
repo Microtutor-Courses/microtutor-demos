@@ -291,5 +291,10 @@ function SNRDemo() {
   );
 }
 
-const root = createRoot(document.getElementById('snr-demo'))
-root.render(<SNRDemo />)
+export default SNRDemo
+
+// Only mount if the target div exists on the page
+const container = document.getElementById('snr-demo')
+if (container) {
+  createRoot(container).render(<SNRDemo />)
+}
