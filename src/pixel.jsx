@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createRoot } from 'react-dom/client'
 
 function PixelDemo() {
     const originalPixelSize = 0.1083333; // Original image pixel size in microns
@@ -98,4 +99,5 @@ function PixelDemo() {
     );
 }
 
-export default PixelDemo
+const root = createRoot(document.getElementById('pixel-demo'))
+root.render(<PixelDemo />)

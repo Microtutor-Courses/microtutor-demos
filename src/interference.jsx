@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createRoot } from 'react-dom/client'
 
 function WaveInterferenceDemo() {
     const [phaseShift, setPhaseShift] = useState(0); // Phase shift in degrees
@@ -282,4 +283,5 @@ function WaveInterferenceDemo() {
     );
 }
 
-export default WaveInterferenceDemo
+const root = createRoot(document.getElementById('interference-demo'))
+root.render(<WaveInterferenceDemo />)
