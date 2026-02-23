@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.esm.js';
+import Chart from 'chart.js/auto';
 
 class PoissonSNR extends LitElement {
   static styles = css`
@@ -122,16 +122,6 @@ class PoissonSNR extends LitElement {
 
   firstUpdated() {
     this._initChart();
-  }
-
-  _loadChartJS() {
-    return new Promise((resolve) => {
-      if (window.Chart) { resolve(); return; }
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
-      script.onload = resolve;
-      document.head.appendChild(script);
-    });
   }
 
   _initChart() {

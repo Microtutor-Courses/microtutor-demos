@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "COMPONENT=wave-interference vite build && COMPONENT=image-pixel-slider vite build && COMPONENT=snr-demo vite build && COMPONENT=spherical-aberration vite build && COMPONENT=poisson-snr vite build",    "preview": "vite preview"
+    "build": "COMPONENT=wave-interference vite build && COMPONENT=image-pixel-slider vite build && COMPONENT=snr-demo vite build && COMPONENT=spherical-aberration vite build && COMPONENT=poisson-snr vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "chart.js": "^4.5.1",
     "lit": "^3.3.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
