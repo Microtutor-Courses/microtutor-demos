@@ -227,3 +227,22 @@ class WaveInterference extends LitElement {
 }
 
 customElements.define('wave-interference', WaveInterference);
+
+// Moodle workaround: replace divs with data-component attribute
+function initViewers() {
+  document
+    .querySelectorAll('[data-component="wave-interference"]')
+    .forEach((el) => {
+      const viewer = document.createElement('wave-interference');
+      Object.keys(el.dataset).forEach((key) => {
+        viewer[key] = el.dataset[key];
+      });
+      el.replaceWith(viewer);
+    });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initViewers);
+} else {
+  initViewers();
+}
