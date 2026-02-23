@@ -41,6 +41,8 @@ class WaveInterference extends LitElement {
       font-weight: bold;
       font-size: 14px;
       margin-right: 8px;
+      white-space: nowrap;
+      width: auto;
     }
     canvas {
       border: 1px solid #d1d5db;
