@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "COMPONENT=interference vite build && COMPONENT=pixel vite build && COMPONENT=snr vite build",
-    "lint": "eslint .",
+    "build": "COMPONENT=wave-interference vite build && COMPONENT=image-pixel-slider vite build",    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
