@@ -5,6 +5,7 @@ const components = {
   'image-pixel-slider': './src/image-pixel-slider.js',
   'snr-demo': './src/snr-demo.js',
   'spherical-aberration': './src/spherical-aberration.js',
+  'poisson-snr': './src/poisson-snr.js',
 }
 
 const names = {
@@ -12,6 +13,7 @@ const names = {
   'image-pixel-slider': 'ImagePixelSlider',
   'snr-demo': 'SNRDemo',
   'spherical-aberration': 'SphericalAberration',
+  'poisson-snr': 'PoissonSNR',
 }
 
 const target = process.env.COMPONENT
