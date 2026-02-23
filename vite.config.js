@@ -3,11 +3,13 @@ import { defineConfig } from 'vite'
 const components = {
   'wave-interference': './src/wave-interference.js',
   'image-pixel-slider': './src/image-pixel-slider.js',
+  'snr-demo': './src/snr-demo.js',
 }
 
 const names = {
   'wave-interference': 'WaveInterference',
   'image-pixel-slider': 'ImagePixelSlider',
+  'snr-demo': 'SNRDemo',
 }
 
 const target = process.env.COMPONENT
