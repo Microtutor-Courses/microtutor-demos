@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.esm.js';
 
 class PoissonSNR extends LitElement {
   static styles = css`
@@ -120,7 +121,7 @@ class PoissonSNR extends LitElement {
   }
 
   firstUpdated() {
-    this._loadChartJS().then(() => this._initChart());
+    this._initChart();
   }
 
   _loadChartJS() {
@@ -137,7 +138,7 @@ class PoissonSNR extends LitElement {
     const canvas = this.shadowRoot.getElementById('poissonChart');
     const ctx = canvas.getContext('2d');
 
-    this._chart = new window.Chart(ctx, {
+    this._chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: this._photons,
