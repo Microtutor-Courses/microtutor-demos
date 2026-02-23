@@ -4,12 +4,14 @@ const components = {
   'wave-interference': './src/wave-interference.js',
   'image-pixel-slider': './src/image-pixel-slider.js',
   'snr-demo': './src/snr-demo.js',
+  'spherical-aberration': './src/spherical-aberration.js',
 }
 
 const names = {
   'wave-interference': 'WaveInterference',
   'image-pixel-slider': 'ImagePixelSlider',
   'snr-demo': 'SNRDemo',
+  'spherical-aberration': 'SphericalAberration',
 }
 
 const target = process.env.COMPONENT
