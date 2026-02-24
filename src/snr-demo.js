@@ -12,7 +12,9 @@ class SNRDemo extends LitElement {
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       padding: 24px;
       max-width: 960px;
+      width: 100%;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .header {
       background-color: #645a89;
@@ -25,6 +27,7 @@ class SNRDemo extends LitElement {
     }
     .panels {
       display: flex;
+      flex-direction: row;
       gap: 24px;
       justify-content: center;
       align-items: flex-start;
@@ -34,6 +37,7 @@ class SNRDemo extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex: 1;
     }
     .panel h4 {
       font-weight: 600;
@@ -44,14 +48,17 @@ class SNRDemo extends LitElement {
     .canvas-wrapper {
       border: 2px solid #d1d5db;
       border-radius: 4px;
+      width: 100%;
+      line-height: 0;
     }
     canvas {
-      display: block;
+      display: block; 
+      width: 100%;
+      line-height: 0;
     }
     .controls {
       display: flex;
       flex-direction: column;
-      max-width: 930px;
       margin: 0 auto;
     }
     .controls label {
@@ -87,25 +94,67 @@ class SNRDemo extends LitElement {
       border: 2px solid white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+
+  .panels.stacked {
+      flex-direction: column;
+      align-items: center;
+    }
+    .panels.stacked .panel {
+      width: 100%;
+  }   
   `;
 
   static properties = {
     noiseLevel: { type: Number },
+    _imageSize: { state: true },
+    _plotWidth: { state: true },
+    _plotHeight: { state: true },
+    _stacked: { state: true },
   };
 
   constructor() {
     super();
     this.noiseLevel = 0;
-    this.imageWidth = 400;
-    this.imageHeight = 400;
-    this.plotWidth = 500;
-    this.plotHeight = 400;
+    this._imageSize = 400;
+    this._plotWidth = 500;
+    this._plotHeight = 400;
+    this._stacked = false;
     this.originalImageData = null;
     this.image = null;
+    this._resizeObserver = null;
   }
 
   firstUpdated() {
+    const container = this.shadowRoot.querySelector('.container');
+    this._resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const totalWidth = Math.floor(entry.contentRect.width);
+        // Match media query breakpoint: stack below 768px viewport,
+        const stacked = totalWidth < 768;
+        this._stacked = stacked;
+
+        if (stacked) {
+          // Each canvas gets full container width
+          this._imageSize = totalWidth;
+          this._plotWidth = totalWidth;
+          this._plotHeight = Math.round(totalWidth * 0.8);
+        } else {
+          // Split available width between the two panels, accounting for gap
+          const gap = 24;
+          const halfWidth = Math.floor((totalWidth - gap) / 2);
+          this._imageSize = halfWidth;
+          this._plotWidth = halfWidth;
+          this._plotHeight = halfWidth;
+        }
+      }
+    });
+    this._resizeObserver.observe(container);
     this.loadImage();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._resizeObserver) this._resizeObserver.disconnect();
   }
 
   updated() {
@@ -118,13 +167,12 @@ class SNRDemo extends LitElement {
     this.image = new Image();
     this.image.crossOrigin = 'anonymous';
     this.image.onload = () => {
-      // Draw to offscreen canvas to extract pixel data
       const offscreen = document.createElement('canvas');
-      offscreen.width = this.imageWidth;
-      offscreen.height = this.imageHeight;
+      offscreen.width = 400; // use fixed reference size
+      offscreen.height = 400; // use fixed reference size
       const ctx = offscreen.getContext('2d');
-      ctx.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight);
-      this.originalImageData = ctx.getImageData(0, 0, this.imageWidth, this.imageHeight);
+      ctx.drawImage(this.image, 0, 0, 400, 400);
+      this.originalImageData = ctx.getImageData(0, 0, 400, 400);
       this.drawAll();
     };
     this.image.onerror = () => console.error('Failed to load image');
@@ -132,24 +180,21 @@ class SNRDemo extends LitElement {
   }
 
   gaussianRandom() {
-    // Box-Muller transform
     const u1 = Math.random();
     const u2 = Math.random();
     return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
   }
 
   generateNoisyData() {
-    // t goes from 0 (no noise) to 1 (max noise)
     const t = this.noiseLevel / 20;
-
-    // Signal scales down, noise scales up
-    const signalStrength = 1 - t * 0.95; // signal drops to 5% at max
-    const noiseSigma = t * 120; // noise grows to sigma=120 at max
+    const signalStrength = 1 - t * 0.95;
+    const noiseSigma = t * 120;
 
     const src = this.originalImageData.data;
-    const noisyData = new Float32Array(this.imageWidth * this.imageHeight);
+    const size = 400; // use fixed reference size
+    const noisyData = new Float32Array(size * size);
 
-    for (let i = 0; i < this.imageWidth * this.imageHeight; i++) {
+    for (let i = 0; i < size * size; i++) {
       const idx = i * 4;
       const r = src[idx], g = src[idx + 1], b = src[idx + 2];
       const gray = 0.299 * r + 0.587 * g + 0.114 * b;
@@ -167,67 +212,76 @@ class SNRDemo extends LitElement {
     this.drawPlot(noisyData);
   }
 
-  drawImage(noisyData) {
-    const canvas = this.shadowRoot.getElementById('image-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+drawImage(noisyData) {
+  const canvas = this.shadowRoot.getElementById('image-canvas');
+  if (!canvas) return;
+  const size = this._imageSize;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
 
-    // Contrast stretch for display
-    let min = Infinity, max = -Infinity;
-    for (let i = 0; i < noisyData.length; i++) {
-      if (noisyData[i] < min) min = noisyData[i];
-      if (noisyData[i] > max) max = noisyData[i];
-    }
-    const range = max - min || 1;
-
-    const imageData = ctx.createImageData(this.imageWidth, this.imageHeight);
-    for (let i = 0; i < noisyData.length; i++) {
-      const val = Math.max(0, Math.min(255, ((noisyData[i] - min) / range) * 255));
-      imageData.data[i * 4] = val;
-      imageData.data[i * 4 + 1] = val;
-      imageData.data[i * 4 + 2] = val;
-      imageData.data[i * 4 + 3] = 255;
-    }
-    ctx.putImageData(imageData, 0, 0);
-
-    // Draw dotted line across middle
-    const midY = this.imageHeight / 2;
-    ctx.strokeStyle = '#7bcdcf';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    ctx.moveTo(0, midY);
-    ctx.lineTo(this.imageWidth, midY);
-    ctx.stroke();
-    ctx.setLineDash([]);
+  // Build 400x400 imageData first
+  let min = Infinity, max = -Infinity;
+  for (let i = 0; i < noisyData.length; i++) {
+    if (noisyData[i] < min) min = noisyData[i];
+    if (noisyData[i] > max) max = noisyData[i];
   }
+  const range = max - min || 1;
+
+  const offscreen = document.createElement('canvas');
+  offscreen.width = 400;
+  offscreen.height = 400;
+  const offCtx = offscreen.getContext('2d');
+  const imageData = offCtx.createImageData(400, 400);
+  for (let i = 0; i < noisyData.length; i++) {
+    const val = Math.max(0, Math.min(255, ((noisyData[i] - min) / range) * 255));
+    imageData.data[i * 4] = val;
+    imageData.data[i * 4 + 1] = val;
+    imageData.data[i * 4 + 2] = val;
+    imageData.data[i * 4 + 3] = 255;
+  }
+  offCtx.putImageData(imageData, 0, 0);
+
+  // Scale up to display canvas
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(offscreen, 0, 0, size, size);
+
+  // Dotted line
+  ctx.strokeStyle = '#7bcdcf';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.moveTo(0, size / 2);
+  ctx.lineTo(size, size / 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
 
   drawPlot(noisyData) {
     const canvas = this.shadowRoot.getElementById('plot-canvas');
     if (!canvas) return;
 
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = this.plotWidth * dpr;
-    canvas.height = this.plotHeight * dpr;
-    canvas.style.width = this.plotWidth + 'px';
-    canvas.style.height = this.plotHeight + 'px';
+    const w = this._plotWidth;
+    const h = this._plotHeight;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px'; 
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
 
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
 
-    const w = this.plotWidth;
-    const h = this.plotHeight;
     const padding = 50;
 
-    // Clear
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, w, h);
 
-    // Extract middle row intensities — clamp to 0-255 for fixed axis
-    const midY = Math.floor(this.imageHeight / 2);
+    const refSize = 400; // use fixed ref size so intensity plot is consistently plotting pixel values
+    const midY = Math.floor(refSize / 2);
     const intensities = [];
-    for (let x = 0; x < this.imageWidth; x++) {
-      const val = Math.max(0, Math.min(255, noisyData[midY * this.imageWidth + x]));
+    for (let x = 0; x < refSize; x++) {
+      const val = Math.max(0, Math.min(255, noisyData[midY * refSize + x]));
       intensities.push(val);
     }
 
@@ -240,7 +294,7 @@ class SNRDemo extends LitElement {
     ctx.lineTo(w - padding, h - padding);
     ctx.stroke();
 
-    // Y axis ticks and labels (fixed 0-255)
+    // Y axis ticks and labels
     ctx.fillStyle = '#333';
     ctx.font = '12px Arial';
     ctx.textAlign = 'right';
@@ -265,10 +319,9 @@ class SNRDemo extends LitElement {
     ctx.fillText('Intensity', 0, 0);
     ctx.restore();
 
-    // Plot intensity line
+    // Plot line
     const plotAreaWidth = w - 2 * padding;
     const plotAreaHeight = h - 2 * padding;
-
     ctx.strokeStyle = '#7bcdcf';
     ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
@@ -289,17 +342,17 @@ class SNRDemo extends LitElement {
     return html`
       <div class="container">
         <div class="header">Adjust the noise and observe the effect on the intensity profile</div>
-        <div class="panels">
+        <div class="panels ${this._stacked ? 'stacked' : ''}">
           <div class="panel">
             <h4>Digital Image</h4>
             <div class="canvas-wrapper">
-              <canvas id="image-canvas" width="${this.imageWidth}" height="${this.imageHeight}"></canvas>
+              <canvas id="image-canvas"></canvas>
             </div>
           </div>
           <div class="panel">
             <h4>Intensity Profile</h4>
             <div class="canvas-wrapper">
-              <canvas id="plot-canvas" style="width:${this.plotWidth}px;height:${this.plotHeight}px"></canvas>
+              <canvas id="plot-canvas"></canvas>
             </div>
           </div>
         </div>
