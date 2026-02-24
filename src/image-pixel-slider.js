@@ -12,7 +12,9 @@ class ImagePixelSlider extends LitElement {
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       padding: 24px;
       max-width: 600px;
+      width: 100%;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .header {
       background-color: #645a89;
@@ -87,7 +89,9 @@ class ImagePixelSlider extends LitElement {
 
   static properties = {
     pixelSize: { type: Number },
-    imageUrl: { type: String }
+    imageUrl: { type: String },
+    _canvasWidth: {state: true},
+    _canvasHeight: {state: true},
   };
 
   constructor() {
@@ -97,15 +101,35 @@ class ImagePixelSlider extends LitElement {
     this.imageUrl = 'https://microtutor-courses.github.io/microtutor-demos/images/u2os_ph488.jpg';
     this.imageWidth = 500;
     this.imageHeight = 500;
+    this._canvasWidth = 500;
+    this._canvasHeight = 500;
     this.image = null;
   }
 
   firstUpdated() {
-    this.loadImage();
+    const container = this.shadowRoot.querySelector('.container');
+    this._resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const newWidth = Math.floor(entry.contentRect.width);
+        if (newWidth !== this._canvasWidth && newWidth > 100) {
+          this._canvasWidth = newWidth;
+          this._canvasHeight = newWidth; 
+        }
+      }
+    });
+    this._resizeObserver.observe(container);
+    this.loadImage(); 
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._resizeObserver) this._resizeObserver.disconnect();
   }
 
   updated() {
-    this.drawPixelatedImage();
+    if (this.image && this.image.complete) {
+      this.drawPixelatedImage();
+    }
   }
 
   loadImage() {
@@ -121,13 +145,13 @@ class ImagePixelSlider extends LitElement {
     const ctx = canvas.getContext('2d');
 
     const downsampleFactor = this.pixelSize / this.originalPixelSize;
-    const downsampledWidth = Math.floor(this.imageWidth / downsampleFactor);
-    const downsampledHeight = Math.floor(this.imageHeight / downsampleFactor);
+    const downsampledWidth = Math.floor(this._canvasWidth / downsampleFactor);
+    const downsampledHeight = Math.floor(this._canvasHeight / downsampleFactor);
 
-    ctx.clearRect(0, 0, this.imageWidth, this.imageHeight);
+    ctx.clearRect(0, 0, this._canvasWidth, this._canvasHeight);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.image, 0, 0, downsampledWidth, downsampledHeight);
-    ctx.drawImage(canvas, 0, 0, downsampledWidth, downsampledHeight, 0, 0, this.imageWidth, this.imageHeight);
+    ctx.drawImage(canvas, 0, 0, downsampledWidth, downsampledHeight, 0, 0, this._canvasWidth, this._canvasHeight);
   }
 
   handleSlider(e) {
@@ -139,7 +163,7 @@ class ImagePixelSlider extends LitElement {
       <div class="container">
         <div class="header">Adjust the image pixel size with the slider below</div>
         <div class="canvas-container">
-          <canvas id="canvas" width="${this.imageWidth}" height="${this.imageHeight}"></canvas>
+          <canvas id="canvas" width="${this._canvasWidth}" height="${this._canvasHeight}"></canvas>
         </div>
         <div class="controls">
           <label>Pixel Size</label>
