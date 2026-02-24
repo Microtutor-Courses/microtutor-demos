@@ -75,13 +75,13 @@ class SphericalAberration extends LitElement {
       top: 8px;
       left: 8px;
       background: rgba(255,255,255,0.92);
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 6px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       z-index: 10;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
     .toggle-label {
