@@ -163,11 +163,19 @@ class SphericalAberration extends LitElement {
     font-size: 14px;
     }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1100px) {
     .container {
       transform: scale(0.65);
       transform-origin: top left;
-      width: 143%; /* compensate for scale so it fills the space */
+      width: 154%; /* calculated by: 1/0.65 * 100 */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      transform: scale(0.5);
+      transform-origin: top left;
+      width: 200%; /* calculated by: 1/0.5 * 100 */
     }
   }
 
