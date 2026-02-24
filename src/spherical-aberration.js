@@ -168,6 +168,7 @@ class SphericalAberration extends LitElement {
       transform: scale(0.75);
       transform-origin: top left;
       width: 133%; /* calculated by: 1/scale * 100 */
+      margin-bottom: -35%; /* adjusting space underneath element from scaling */
     }
   }
 
@@ -176,6 +177,8 @@ class SphericalAberration extends LitElement {
       transform: scale(0.5);
       transform-origin: top left;
       width: 200%; /* calculated by: 1/0.5 * 100 */
+      margin-bottom: -35%; /* adjusting space underneath element from scaling */
+
     }
   }
 
@@ -184,6 +187,8 @@ class SphericalAberration extends LitElement {
       transform: scale(0.5);
       transform-origin: top left;
       width: 200%;
+      margin-bottom: -155%; /* adjusting space underneath element from scaling */
+
     }
   }
   `;
