@@ -226,7 +226,7 @@ class WaveInterference extends LitElement {
     return html`
       <div class="container">
         <div class="card">
-          <div class="title">Adjust the phase shift between wave 1 & wave 2 with the slider below</div>
+          <div class="title">Adjust the phase shift between wave 1 & wave 2 with the slider</div>
           <div class="wave-row">
             <div class="label">wave 1</div>
             <canvas id="canvas1"></canvas>
