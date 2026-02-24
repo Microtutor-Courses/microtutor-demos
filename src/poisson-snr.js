@@ -9,11 +9,13 @@ class PoissonSNR extends LitElement {
     }
     .container {
       max-width: 900px;
+      width: 100%;
       margin: 0 auto;
       background: white;
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
     .header {
       background-color: #645a89;
@@ -92,6 +94,21 @@ class PoissonSNR extends LitElement {
       font-size: 14px;
       font-weight: 600;
       color: #333;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 16px;
+        }
+        .info-box {
+            padding: 12px;
+        }
+        .info-box-label {
+            font-size: 14px;
+        }
+        .info-box-value {
+            font-size: 20px;
+        }
     }
   `;
 
