@@ -10,6 +10,8 @@ class WaveInterference extends LitElement {
       background: #f3f4f6;
       padding: 2rem;
       border-radius: 8px;
+      box-sizing: border-box;
+      width: 100%;
     }
     .card {
       background: white;
@@ -18,6 +20,7 @@ class WaveInterference extends LitElement {
       padding: 1.5rem;
       max-width: 560px;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .title {
       background-color: #645a89;
@@ -47,6 +50,8 @@ class WaveInterference extends LitElement {
     canvas {
       border: 1px solid #d1d5db;
       border-radius: 4px;
+      display: block;
+      width: 100%;
     }
     .slider-section {
       display: flex;
@@ -93,16 +98,35 @@ class WaveInterference extends LitElement {
   `;
 
   static properties = {
-    phaseShift: { type: Number }
+    phaseShift: { type: Number },
+    _canvasWidth: { state: true },
   };
 
   constructor() {
     super();
     this.phaseShift = 0;
+    this._canvasWidth = 500;
+    this._resizeObserver = null;
   }
 
   firstUpdated() {
+    const card = this.shadowRoot.querySelector('.card');
+    this._resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        // subtract label width (~40px) and padding
+        const newWidth = Math.floor(entry.contentRect.width - 60);
+        if (newWidth !== this._canvasWidth && newWidth > 100) {
+          this._canvasWidth = newWidth;
+        }
+      }
+    });
+    this._resizeObserver.observe(card);
     this.drawAll();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._resizeObserver) this._resizeObserver.disconnect();
   }
 
   updated() {
@@ -110,16 +134,17 @@ class WaveInterference extends LitElement {
   }
 
   drawAll() {
-    this.drawWave(this.shadowRoot.getElementById('canvas1'), 0);
-    this.drawWave(this.shadowRoot.getElementById('canvas2'), this.phaseShift);
-    this.drawCombined(this.shadowRoot.getElementById('canvas3'), this.phaseShift);
+    const w = this._canvasWidth;
+    const h = Math.round(w * 0.3); // maintain aspect ratio
+    this.drawWave(this.shadowRoot.getElementById('canvas1'), 0, w, h);
+    this.drawWave(this.shadowRoot.getElementById('canvas2'), this.phaseShift, w, h);
+    this.drawCombined(this.shadowRoot.getElementById('canvas3'), this.phaseShift, w, h);
   }
 
-  drawWave(canvas, phase) {
+  drawWave(canvas, phase, w, h) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const w = 500, h = 150;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
@@ -145,21 +170,21 @@ class WaveInterference extends LitElement {
 
     // wave
     const phaseRad = phase * Math.PI / 180;
+    const amplitude = h * 0.23; // scale amplitude with height
     ctx.strokeStyle = '#7bcdcf';
     ctx.lineWidth = 3;
     ctx.beginPath();
     for (let x = 0; x < w; x++) {
-      const y = h / 2 - 35 * Math.sin(2 * Math.PI * x / 100 + phaseRad);
+      const y = h / 2 - amplitude * Math.sin(2 * Math.PI * x / 100 + phaseRad);
       x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     ctx.stroke();
   }
 
-  drawCombined(canvas, phase) {
+  drawCombined(canvas, phase, w, h) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const w = 500, h = 150;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
@@ -182,11 +207,12 @@ class WaveInterference extends LitElement {
     ctx.stroke();
 
     const phaseRad = phase * Math.PI / 180;
+    const amplitude = h * 0.23;
     ctx.strokeStyle = '#7bcdcf';
     ctx.lineWidth = 3;
     ctx.beginPath();
     for (let x = 0; x < w; x++) {
-      const y = h / 2 - (35 * Math.sin(2 * Math.PI * x / 100) + 35 * Math.sin(2 * Math.PI * x / 100 + phaseRad));
+      const y = h / 2 - (amplitude * Math.sin(2 * Math.PI * x / 100) + amplitude * Math.sin(2 * Math.PI * x / 100 + phaseRad));
       x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     ctx.stroke();
@@ -203,15 +229,15 @@ class WaveInterference extends LitElement {
           <div class="title">Adjust the phase shift between wave 1 & wave 2 with the slider below</div>
           <div class="wave-row">
             <div class="label">wave 1</div>
-            <canvas id="canvas1" style="width:500px;height:150px"></canvas>
+            <canvas id="canvas1"></canvas>
           </div>
           <div class="wave-row">
             <div class="label">wave 2</div>
-            <canvas id="canvas2" style="width:500px;height:150px"></canvas>
+            <canvas id="canvas2"></canvas>
           </div>
           <div class="wave-row">
             <div class="label">resulting</div>
-            <canvas id="canvas3" style="width:500px;height:150px"></canvas>
+            <canvas id="canvas3"></canvas>
           </div>
           <div class="slider-section">
             <div class="slider-label">phase shift</div>
@@ -230,7 +256,6 @@ class WaveInterference extends LitElement {
 
 customElements.define('wave-interference', WaveInterference);
 
-// Moodle workaround: replace divs with data-component attribute
 function initViewers() {
   document
     .querySelectorAll('[data-component="wave-interference"]')
