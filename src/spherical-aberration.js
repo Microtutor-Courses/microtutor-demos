@@ -35,7 +35,9 @@ class SphericalAberration extends LitElement {
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       padding: 24px;
       max-width: 760px;
+      width: 100%;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .columns {
       display: flex;
@@ -73,17 +75,17 @@ class SphericalAberration extends LitElement {
       top: 8px;
       left: 8px;
       background: rgba(255,255,255,0.92);
-      padding: 5px 10px;
+      padding: 10px 14px;
       border-radius: 6px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       z-index: 10;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .toggle-label {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 600;
       color: #4b5563;
     }
@@ -91,8 +93,8 @@ class SphericalAberration extends LitElement {
     .toggle {
       position: relative;
       display: inline-block;
-      width: 36px;
-      height: 20px;
+      width: 44px;
+      height: 24px;
     }
     .toggle input {
       opacity: 0;
@@ -110,8 +112,8 @@ class SphericalAberration extends LitElement {
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 14px;
-      width: 14px;
+      height: 18px;
+      width: 18px;
       left: 3px;
       bottom: 3px;
       background-color: white;
@@ -122,7 +124,7 @@ class SphericalAberration extends LitElement {
       background-color: #7bcdcf;
     }
     input:checked + .toggle-slider:before {
-      transform: translateX(16px);
+      transform: translateX(20px);
     }
     .ray-overlay {
       position: absolute;
@@ -160,6 +162,22 @@ class SphericalAberration extends LitElement {
     color: #4b5563;
     font-size: 14px;
     }
+
+  @media (max-width: 768px) {
+    .container {
+      transform: scale(0.7);
+      transform-origin: top left;
+      width: 143%; /* compensate for scale so it fills the space */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      transform: scale(0.5);
+      transform-origin: top left;
+      width: 200%;
+    }
+  }
   `;
 
   static properties = {
