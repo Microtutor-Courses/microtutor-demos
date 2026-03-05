@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "COMPONENT=wave-interference vite build && COMPONENT=image-pixel-slider vite build && COMPONENT=snr-demo vite build && COMPONENT=spherical-aberration vite build && COMPONENT=poisson-snr vite build",
+    "build": "COMPONENT=wave-interference vite build && COMPONENT=image-pixel-slider vite build && COMPONENT=snr-demo vite build && COMPONENT=spherical-aberration vite build && COMPONENT=poisson-snr vite build && COMPONENT=digital-image-demo vite build",
     "preview": "vite preview"
   },
   "dependencies": {

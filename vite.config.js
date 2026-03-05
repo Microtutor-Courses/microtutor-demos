@@ -6,6 +6,7 @@ const components = {
   'snr-demo': './src/snr-demo.js',
   'spherical-aberration': './src/spherical-aberration.js',
   'poisson-snr': './src/poisson-snr.js',
+  'digital-image-demo': './src/digital-image-demo.js',
 }
 
 const names = {
@@ -14,6 +15,7 @@ const names = {
   'snr-demo': 'SNRDemo',
   'spherical-aberration': 'SphericalAberration',
   'poisson-snr': 'PoissonSNR',
+  'digital-image-demo': 'DigitalImageDemo',
 }
 
 const target = process.env.COMPONENT
