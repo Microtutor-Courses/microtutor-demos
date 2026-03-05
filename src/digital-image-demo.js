@@ -38,6 +38,7 @@ class DigitalImageDemo extends LitElement {
       flex-direction: column;
       align-items: center;
       flex: 1;
+      max-width: 480px;
     }
     .panel-label {
       font-weight: 600;
