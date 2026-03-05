@@ -8,7 +8,7 @@ const components = {
   'poisson-snr': './src/poisson-snr.js',
   'digital-image-demo': './src/digital-image-demo.js',
   'spherical-aberration-ray-demo': './src/spherical-aberration-ray-demo.js',
-  'micro-viewer-3d': './src/micro-viewer-3D.js',
+  'micro-viewer-3D': './src/micro-viewer-3D.js',
 }
 
 const names = {
@@ -19,7 +19,7 @@ const names = {
   'poisson-snr': 'PoissonSNR',
   'digital-image-demo': 'DigitalImageDemo',
   'spherical-aberration-ray-demo': 'SphericalAberrationRayDemo',
-  'micro-viewer-3d': 'MicroViewer3D',
+  'micro-viewer-3D': 'MicroViewer3D',
 }
 
 const target = process.env.COMPONENT

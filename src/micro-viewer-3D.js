@@ -703,16 +703,16 @@ update3DPlanes() {
 }
 
 // Register the custom element
-customElements.define('micro-viewer-3d', MicroViewer3D);
+customElements.define('micro-viewer-3D', MicroViewer3D);
 
 // For Moodle integration: Custom elemnts are sanitized or not allowed,
-// The code below is a work around: Look for divs with data-component="micro-viewer-3d"
+// The code below is a work around: Look for divs with data-component="micro-viewer-3D"
 // and replace them with the web component.
 function initViewers() {
 	document
-		.querySelectorAll('[data-component="micro-viewer-3d"]')
+		.querySelectorAll('[data-component="micro-viewer-3D"]')
 		.forEach((el) => {
-			const viewer = document.createElement("micro-viewer-3d");
+			const viewer = document.createElement("micro-viewer-3D");
 
 			// grab all data- attributes and pass them to the viewer
 			Object.keys(el.dataset).forEach((key) => {
