@@ -31,7 +31,7 @@ class DigitalImageDemo extends LitElement {
       flex-direction: row;
       gap: 24px;
       justify-content: center;
-      align-items: flex-start;
+      align-items: stretch;
     }
     .panel {
       display: flex;
@@ -50,9 +50,11 @@ class DigitalImageDemo extends LitElement {
     .optical-img {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;
       border-radius: 4px;
       border: 2px solid #d1d5db;
+      box-sizing: border-box;
     }
     /* Slider reveal container */
     .reveal-container {
