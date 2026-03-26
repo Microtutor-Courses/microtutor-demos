@@ -9,6 +9,7 @@ const components = {
   'digital-image-demo': './src/digital-image-demo.js',
   'spherical-aberration-ray-demo': './src/spherical-aberration-ray-demo.js',
   'micro-viewer-3d': './src/micro-viewer-3d.js',
+  'background-demo': './src/background-demo.js',
 }
 
 const names = {
@@ -20,6 +21,7 @@ const names = {
   'digital-image-demo': 'DigitalImageDemo',
   'spherical-aberration-ray-demo': 'SphericalAberrationRayDemo',
   'micro-viewer-3d': 'MicroViewer3D',
+  'background-demo': 'BackgroundDemo',
 }
 
 const target = process.env.COMPONENT
