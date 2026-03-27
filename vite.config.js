@@ -10,6 +10,7 @@ const components = {
   'spherical-aberration-ray-demo': './src/spherical-aberration-ray-demo.js',
   'micro-viewer-3d': './src/micro-viewer-3d.js',
   'background-demo': './src/background-demo.js',
+  'zstack-demo': './src/zstack-demo.js',
 }
 
 const names = {
@@ -22,6 +23,7 @@ const names = {
   'spherical-aberration-ray-demo': 'SphericalAberrationRayDemo',
   'micro-viewer-3d': 'MicroViewer3D',
   'background-demo': 'BackgroundDemo',
+  'zstack-demo': 'ZStackDemo',
 }
 
 const target = process.env.COMPONENT
